@@ -6,10 +6,26 @@ Console.WriteLine("AZZets");
 
 //Debugging purposes
 DateTime date1 = new DateTime(1992, 2, 10);
+//DateTime date3 = new DateTime(2021, 2, 23
+DateTime date3 = new DateTime(2021 , 2, 24);
+//DateTime date3 = new DateTime(2021 , 5, 22);
+
 DateTime date2 = new DateTime(2024, 2, 20);
+
+/*
+DateTime Trialdate = new DateTime(2021, 2, 22);
+DateTime tempo = Trialdate.AddYears(3);
+tempo= tempo.AddMonths(-3);
+Console.WriteLine("Tempo: " + tempo);
+TimeSpan temp2 = DateTime.Today - tempo;
+Console.WriteLine("Time difference: " + temp2.TotalDays);
+*/
+
+
+
 Computer comp1 = new Computer("Apple", "MACBOOK", "US", date1, 970);
 Computer comp2 = new Computer("Windows", "Elitbook", "US", date2, 800);
-Computer comp3 = new Computer("Windows", "HP", "US", date2, 840);
+Computer comp3 = new Computer("Windows", "HP", "US", date3, 840);
 Computer comp4 = new Computer("Lenovo", "Yoga 730", "US", date1, 300);
 MyComputer.Add(comp1);
 MyComputer.Add(comp2);
@@ -21,9 +37,8 @@ DisplayLists();
 
 void DisplayLists()
 {
-    //itemsList = itemsList.OrderBy(p => p.Price).ToList();
     //Sorter by 
-    //MyComputer = MyComputer.OrderBy(c => c.PurchaseDate).ToList();
+  //  MyComputer = MyComputer.OrderBy(c => c.PurchaseDate).ToList();
 
     DateTime currentdate = DateTime.Now;    // Get the current date,  want to modifiy this one
     DateTime expirationDate = currentdate.AddYears(3);
@@ -32,14 +47,35 @@ void DisplayLists()
     {
         // If purchase date + 3 år är mindre än dagens datum blir det rött
         DateTime temp = MyComputer[i].PurchaseDate.AddYears(3);
-        if (temp <= DateTime.Now)
+       // temp = temp.AddMonths(-3);
+        TimeSpan difference = temp - DateTime.Today;
+
+
+
+
+        DateTime toOld = MyComputer[i].PurchaseDate.AddYears(3);
+        
+
+
+        if (toOld <= DateTime.Now || difference.TotalDays <= 0)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Your computer is too old");
+            Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate);
+            Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
+        }
+        //else if(temp < DateTime.Now )
+        //else if (temp <= DateTime.Now)
+        else if (difference.TotalDays >= 0 && difference.TotalDays <= 90)
+        {
+            
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate);
+            Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
         }
         else
         {
             Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate);
+            Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
         }
         Console.ResetColor();
     }
