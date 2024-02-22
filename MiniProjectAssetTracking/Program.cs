@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Security.Cryptography.X509Certificates;
+
 List<Computer> MyComputer = new List<Computer> ();
 List<Phone> MyPhone = new List<Phone> ();
 Console.WriteLine("AZZets");
@@ -19,25 +21,29 @@ tempo= tempo.AddMonths(-3);
 Console.WriteLine("Tempo: " + tempo);
 TimeSpan temp2 = DateTime.Today - tempo;
 Console.WriteLine("Time difference: " + temp2.TotalDays);
-*/
-
-
 
 Computer comp1 = new Computer("Apple", "MACBOOK", "US", date1, 970);
 Computer comp2 = new Computer("Windows", "Elitbook", "US", date2, 800);
 Computer comp3 = new Computer("Windows", "HP", "US", date3, 840);
 Computer comp4 = new Computer("Lenovo", "Yoga 730", "US", date1, 300);
 MyComputer.Add(comp1);
+*/
+
+Computer comp1 = new Computer("Apple", "MACBOOK", date1, 970, new Office("US", "Dollar"));
+Computer comp2 = new Computer("Windows", "Elitbook", date2, 800, new Office("Japan", "Yen"));
+Computer comp3 = new Computer("Windows", "HP", date3, 840, new Office("Sweden", "SEK"));
+Computer comp4 = new Computer("Lenovo", "Yoga 730", date1, 300, new Office("US", "Dollar"));
+MyComputer.Add(comp1);
 MyComputer.Add(comp2);
 MyComputer.Add(comp3);
 MyComputer.Add(comp4);
 
 
-Phone phone1 = new Phone("Huawei", "Huawei p9 lite", "US", date2, 300);
-Phone phone2 = new Phone("Apple", "Iphone 9", "US", date3, 1000);
-Phone phone3 = new Phone("Samsung", "Samsung galaxy 4", "US", date1, 200);
-Phone phone4 = new Phone("Google", "Google Pixle pro 8", "US", date3, 150);
-Phone phone5 = new Phone("Apple", "Iphone 2", "US", date2, 500);
+Phone phone1 = new Phone("Huawei", "Huawei p9 lite", date2, 300, new Office("US", "Dollar"));
+Phone phone2 = new Phone("Apple", "Iphone 9", date3, 1000, new Office("US", "Dollar"));
+Phone phone3 = new Phone("Samsung", "Samsung galaxy 4", date1, 200, new Office("US", "Dollar"));
+Phone phone4 = new Phone("Google", "Google Pixle pro 8", date3, 150, new Office("Sweden", "SEK")); ;
+Phone phone5 = new Phone("Apple", "Iphone 2", date2, 500, new Office("US", "Dollar"));
 MyPhone.Add(phone1);
 MyPhone.Add(phone2);
 MyPhone.Add(phone3);
@@ -50,7 +56,7 @@ DisplayLists();
 void DisplayLists()
 {
     //Sorter by purchase date
-    MyComputer = MyComputer.OrderBy(c => c.PurchaseDate).ToList();
+    MyComputer = MyComputer.OrderBy(c => c.Office.OfficeName).ThenBy(c => c.PurchaseDate).ToList();
 
     for (int i = 0; i < MyComputer.Count(); i++)
     {
@@ -62,53 +68,53 @@ void DisplayLists()
         if (toOld <= DateTime.Now || difference.TotalDays <= 0)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate);
+            Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate + "\nOffie: " + MyComputer[i].Office.OfficeName);
             Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
         }
         else if (difference.TotalDays >= 0 && difference.TotalDays <= 90)
         {
             
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate);
+            Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate + "\nOffie: " + MyComputer[i].Office.OfficeName);
             Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
         }
         else
         {
-            Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate);
+            Console.WriteLine("\nBrand:" + MyComputer[i].Brand + " \nModel: " + MyComputer[i].ModelName + " \nPurchase date:" + MyComputer[i].PurchaseDate + "\nOffie: " + MyComputer[i].Office.OfficeName);
             Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
         }
         Console.ResetColor();
     }
+
+    MyPhone = MyPhone.OrderBy(p => p.Office.OfficeName).ThenBy(p => p.PurchaseDate).ToList();
     Console.WriteLine("_________________________________________________________________");
-
-    MyPhone = MyPhone.OrderBy(p => p.PurchaseDate).ToList();
-
     for (int i = 0; i < MyPhone.Count(); i++)
     {
         DateTime temp = MyPhone[i].PurchaseDate.AddYears(3);
         TimeSpan difference = temp - DateTime.Today;
+
         DateTime toOld = MyPhone[i].PurchaseDate.AddYears(3);
 
         if (toOld <= DateTime.Now || difference.TotalDays <= 0)
-            textPhone(i, difference, 1);
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nBrand:" + MyPhone[i].Brand + " \nModel: " + MyPhone[i].ModelName + " \nPurchase date:" + MyPhone[i].PurchaseDate + "\nOffie: " + MyPhone[i].Office.OfficeName);
+            Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
+        }
         else if (difference.TotalDays >= 0 && difference.TotalDays <= 90)
-            textPhone(i, difference, 2);
+        {
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\nBrand:" + MyPhone[i].Brand + " \nModel: " + MyPhone[i].ModelName + " \nPurchase date:" + MyPhone[i].PurchaseDate + "\nOffie: " + MyPhone[i].Office.OfficeName);
+            Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
+        }
         else
-            textPhone(i, difference, 3);
+        {
+            Console.WriteLine("\nBrand:" + MyPhone[i].Brand + " \nModel: " + MyPhone[i].ModelName + " \nPurchase date:" + MyPhone[i].PurchaseDate + "\nOffie: " + MyPhone[i].Office.OfficeName);
+            Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
+        }
         Console.ResetColor();
     }
-    Console.ReadKey();
-}
-void textPhone(int index, TimeSpan difference, int state)
-{
-    if(state == 1)
-        Console.ForegroundColor = ConsoleColor.Red;
-    if(state == 2)
-        Console.ForegroundColor = ConsoleColor.Yellow;
-    else
-        Console.ResetColor();
-    Console.WriteLine("\nBrand:" + MyPhone[index].Brand + " \nModel: " + MyPhone[index].ModelName + " \nPurchase date:" + MyPhone[index].PurchaseDate);
-    Console.WriteLine("Days left: " + Math.Floor(difference.TotalDays));
 }
 
 void Lifespan()
@@ -120,41 +126,54 @@ void Lifespan()
     Console.WriteLine("Time remaining: " + timeRemaining + " \nCurrent date: " + currentdate.ToString() + " \nOld date:" + expirationDate);
 }
 
+class Office
+{
+    public Office(string officeName, string currency)
+    {
+        OfficeName = officeName;
+        Currency = currency;
+    }
+
+    public string OfficeName { get; set; }
+    public string Currency { get; set; }
+}
+
 
 class Computer
 {
-    //string computerType
-    public Computer(string brand, string modelName, string office, DateTime purchaseDate, int price ) 
+    public Computer(string brand, string modelName, DateTime purchaseDate, int price, Office office)
     {
-        //ComputerType = computerType;
         Brand = brand;
+        ModelName = modelName;
         PurchaseDate = purchaseDate;
         Price = price;
-        ModelName = modelName;
+        Office = office;
     }
-    //public string ComputerType { get; set;}
-    public string Brand { get; set;}
+
+    public string Brand { get; set; }
     public string ModelName { get; set; }
-
-    public string Office { get; set;}
-
-    public DateTime PurchaseDate { get; set;}
-    public int Price { get; set;}
+    public DateTime PurchaseDate { get; set; }
+    public int Price { get; set; }
+    public Office Office { get; set; }
 
 }
 
 class Phone
 {
-    public Phone(string brand, string modelName, string office, DateTime purchaseDate, int price )
+    public Phone(string brand, string modelName, DateTime purchaseDate, int price, Office office)
     {
         Brand = brand;
         PurchaseDate = purchaseDate;
         Price = price;
         ModelName = modelName;
+        Office = office;
     }
     public string Brand { get; set; }
     public DateTime PurchaseDate { get; set; }
     public int Price { get; set;}
     public string ModelName { get; set;}
+    public Office Office { get; set;}
+
 
 }
+
